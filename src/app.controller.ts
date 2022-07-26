@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Client, ClientKafka, Transport } from '@nestjs/microservices';
 import { AppService } from './app.service';
+import { MessageType } from './interfaces/message-type.enum';
+import { IMessage } from './interfaces/messge.interface';
 import { INews } from './interfaces/news.interface';
 
 @Controller()
@@ -29,16 +31,43 @@ export class AppController {
   }
 
   @Post("/publish")
-  getHello(@Body() message: INews) {
+  getHello(@Body() news: INews) {
 
-    const news: INews = {
-      title: "Title 1",
-      briefDescription: "Helloe w2",
-      imageUrl: "https://i1-vnexpress.vnecdn.net/2022/07/26/saigonthieunuoc-1658765758-8336-1658769497.jpg?w=680&h=408&q=100&dpr=1&fit=crop&s=qUc9VKLR7rogdUjLAZZ0Cw",
-      destinationUrl: "https://vnexpress.net/noi-lo-thieu-nuoc-cua-sai-gon-4491856.html",
+    // const news: INews = {
+    //   title: "Title 1",
+    //   briefDescription: "Helloe w2",
+    //   imageUrl: "https://i1-vnexpress.vnecdn.net/2022/07/26/saigonthieunuoc-1658765758-8336-1658769497.jpg?w=680&h=408&q=100&dpr=1&fit=crop&s=qUc9VKLR7rogdUjLAZZ0Cw",
+    //   destinationUrl: "https://vnexpress.net/noi-lo-thieu-nuoc-cua-sai-gon-4491856.html",
+    // }
+
+    const msg: IMessage = {
+      type: MessageType.CREATE_NEWS,
+      msg: news
     }
 
-    return this.client.send('hot-news', news); // args - topic, message
+    console.log("message ", msg);
+
+    return this.client.send('hot-news', msg); // args - topic, message
   }
+
+  // @Delete("/news/delete/:id")
+  // deleteNews(@Param("id") id: string) {
+
+  //   // const news: INews = {
+  //   //   title: "Title 1",
+  //   //   briefDescription: "Helloe w2",
+  //   //   imageUrl: "https://i1-vnexpress.vnecdn.net/2022/07/26/saigonthieunuoc-1658765758-8336-1658769497.jpg?w=680&h=408&q=100&dpr=1&fit=crop&s=qUc9VKLR7rogdUjLAZZ0Cw",
+  //   //   destinationUrl: "https://vnexpress.net/noi-lo-thieu-nuoc-cua-sai-gon-4491856.html",
+  //   // }
+
+  //   const msg: IMessage = {
+  //     type: MessageType.DELETE_NEWS,
+  //     msg: {}
+  //   }
+
+  //   console.log("message ", msg);
+
+  //   return this.client.send('hot-news', msg); // args - topic, message
+  // }
 
 }
